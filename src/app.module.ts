@@ -1,17 +1,23 @@
 import { Module } from '@nestjs/common';
-import { CharacterService } from './character/character.service';
-import { CharacterController } from './character/character.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Character } from './character/entities/character.entity';
-import { CharacterSchema, CharacterDocument } from './character/schema/character.schema';
+import { CharacterModule } from './character/character.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Character]), 
-    MongooseModule.forFeature([{ name: Character.name, schema: CharacterSchema }]) 
+    ConfigModule.forRoot(), 
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }),
+    }),
+    CharacterModule,
   ],
-  controllers: [CharacterController],
-  providers: [CharacterService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
