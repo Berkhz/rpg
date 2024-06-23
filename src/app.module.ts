@@ -14,4 +14,4 @@ import { CharacterSchema, CharacterDocument } from './character/schema/character
   controllers: [CharacterController],
   providers: [CharacterService],
 })
-export class CharacterModule {}
+export class AppModule {}
