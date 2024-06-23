@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -9,26 +17,48 @@ export class UserController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+    try {
+      return this.userService.create(createUserDto);
+    } catch (error) {
+      throw new Error("Erro ao criar usuário! " + error)
+    }
   }
 
   @Get()
   findAll() {
-    return this.userService.findAll() ? this.userService.findAll(): "Lista vazia";
+    try {
+      return this.userService.findAll()
+      ? this.userService.findAll()
+      : 'Lista vazia';
+    } catch (error) {
+      throw new Error("Erro ao buscar usuários! " + error)
+    }
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+    try {
+      return this.userService.findOne(id);
+    } catch (error) {
+      throw new Error("Erro ao buscar usuário! " + error)
+    }
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+    try {
+      return this.userService.update(id, updateUserDto);
+    } catch (error) {
+      throw new Error("Erro ao editar usuário! " + error)
+    }
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.userService.remove(id);
+    try {
+      return this.userService.remove(id);
+    } catch (error) {
+      throw new Error("Erro ao excluir usuário! " + error)
+    }
   }
 }
