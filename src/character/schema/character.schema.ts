@@ -11,23 +11,44 @@ export class Character {
   @Prop({ required: true })
   class: string;
 
-  @Prop({ type: Object, required: true })
-  attributes: object;
+  @Prop({ required: true })
+  level: number;
+
+  @Prop({
+    type: Object,
+    required: true,
+    default: {
+      strength: 10,
+      dexterity: 10,
+      constitution: 10,
+      intelligence: 10,
+      wisdom: 10,
+      charisma: 10,
+    },
+  })
+  attributes: {
+    strength: number;
+    dexterity: number;
+    constitution: number;
+    intelligence: number;
+    wisdom: number;
+    charisma: number;
+  };
 
   @Prop({ type: [Object], default: [] })
-  feats: object[];
+  feats: { name: string; description: string }[];
 
   @Prop({ required: true })
   alignment: string;
 
   @Prop({ type: [Object], default: [] })
-  talents: object[];
+  talents: { name: string; description: string }[];
 
   @Prop({ type: [Object], default: [] })
-  spells: object[];
+  spells: { name: string; level: number }[];
 
   @Prop({ type: [Object], default: [] })
-  items: object[];
+  items: { name: string; description: string }[];
 }
 
 export const CharacterSchema = SchemaFactory.createForClass(Character);

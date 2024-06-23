@@ -1,4 +1,68 @@
-import { IsString, IsNotEmpty, IsObject, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsObject, IsArray, IsNumber, ValidateNested, ArrayNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class AttributeDto {
+  @IsNumber()
+  @IsNotEmpty()
+  strength: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  dexterity: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  constitution: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  intelligence: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  wisdom: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  charisma: number;
+}
+
+class FeatDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  description: string;
+}
+
+class TalentDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  description: string;
+}
+
+class SpellDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  level: number;
+}
+
+class ItemDto {
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  description: string;
+}
 
 export class CreateCharacterDto {
   @IsString()
@@ -9,22 +73,37 @@ export class CreateCharacterDto {
   @IsNotEmpty()
   class: string;
 
-  @IsObject()
+  @IsNumber()
   @IsNotEmpty()
-  attributes: object;
+  level: number;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => AttributeDto)
+  @IsNotEmpty()
+  attributes: AttributeDto;
 
   @IsArray()
-  feats: object[];
+  @ValidateNested({ each: true })
+  @Type(() => FeatDto)
+  feats: FeatDto[];
 
   @IsString()
+  @IsNotEmpty()
   alignment: string;
 
   @IsArray()
-  talents: object[];
+  @ValidateNested({ each: true })
+  @Type(() => TalentDto)
+  talents: TalentDto[];
 
   @IsArray()
-  spells: object[];
+  @ValidateNested({ each: true })
+  @Type(() => SpellDto)
+  spells: SpellDto[];
 
   @IsArray()
-  items: object[];
+  @ValidateNested({ each: true })
+  @Type(() => ItemDto)
+  items: ItemDto[];
 }
