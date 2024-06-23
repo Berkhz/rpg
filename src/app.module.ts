@@ -1,14 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { CharacterService } from './character/character.service';
+import { CharacterController } from './character/character.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CharacterModule } from './character/character.module';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
+import { Character } from './character/entities/character.entity';
+import { CharacterSchema, CharacterDocument } from './character/schema/character.schema';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://localhost/nest'), CharacterModule, AuthModule, UserModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    TypeOrmModule.forFeature([Character]), 
+    MongooseModule.forFeature([{ name: Character.name, schema: CharacterSchema }]) 
+  ],
+  controllers: [CharacterController],
+  providers: [CharacterService],
 })
-export class AppModule {}
+export class CharacterModule {}

@@ -1,26 +1,32 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
+import { Character, CharacterDocument } from './schema/character.schema';
 
 @Injectable()
 export class CharacterService {
-  create(createCharacterDto: CreateCharacterDto) {
-    return 'This action adds a new character';
+  constructor(@InjectModel(Character.name) private characterModel: Model<CharacterDocument>) {}
+
+  async create(createCharacterDto: CreateCharacterDto): Promise<Character> {
+    const createdCharacter = new this.characterModel(createCharacterDto);
+    return createdCharacter.save();
   }
 
-  findAll() {
-    return `This action returns all character`;
+  async findAll(): Promise<Character[]> {
+    return this.characterModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} character`;
+  async findOne(id: string): Promise<Character> {
+    return this.characterModel.findById(id).exec();
   }
 
-  update(id: number, updateCharacterDto: UpdateCharacterDto) {
-    return `This action updates a #${id} character`;
+  async update(id: string, updateCharacterDto: UpdateCharacterDto): Promise<Character> {
+    return this.characterModel.findByIdAndUpdate(id, updateCharacterDto, { new: true }).exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} character`;
+  async remove(id: string): Promise<Character> {
+    return this.characterModel.findByIdAndDelete(id).exec();
   }
 }
