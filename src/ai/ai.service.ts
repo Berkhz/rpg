@@ -1,37 +1,31 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 @Injectable()
 export class AiService {
     private genAI;
-    private model;
+    private readonly model;
 
-    constructor() {
-        this.genAI = new GoogleGenerativeAI('AIzaSyAZ6AR8vwxKC3b2gT0XaVbl7zxOfd8rxeI');
+    constructor(private configService: ConfigService) {
+        const apiKey = this.configService.get<string>('GOOGLE_API_KEY');
+        this.genAI = new GoogleGenerativeAI(apiKey);
         this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.0-pro' });
     }
 
     async generateBackground(character: any): Promise<string> {
         const prompt = `Crie um background para o seguinte personagem de RPG do universo de D&D: ${JSON.stringify(character)}`;
-        const response = await this.model.generate({
-            messages: [
-                { role: 'system', content: 'Você é um criador de histórias' },
-                { role: 'user', content: prompt },
-            ],
-            max_tokens: 150,
-        });
-        return response.choices[0].message.content;
+        const result = await this.model.generateContent(prompt);
+        const response = result.response;
+        const background = response.text();
+        return background;
     }
 
     async generateAdventure(characters: any[]): Promise<string> {
-        const prompt = `Crie uma aventura para os seguintes personagens: ${JSON.stringify(characters)}`;
-        const response = await this.model.generate({
-            messages: [
-                { role: 'system', content: 'Você é um criador de histórias' },
-                { role: 'user', content: prompt },
-            ],
-            max_tokens: 300,
-        });
-        return response.choices[0].message.content;
+        const prompt = `Crie uma aventura para os seguintes personagens de RPG do universo de D&D: ${JSON.stringify(characters)}`;
+        const result = await this.model.generateContent(prompt);
+        const response = result.response;
+        const adventure = response.text();
+        return adventure;
     }
 }

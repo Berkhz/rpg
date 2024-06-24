@@ -4,10 +4,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CharacterModule } from './character/character.module';
 import { UserModule } from './user/user.module';
 import { AiModule } from './ai/ai.module';
+import * as dotenv from 'dotenv';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), 
+    ConfigModule.forRoot({isGlobal: true}), 
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
