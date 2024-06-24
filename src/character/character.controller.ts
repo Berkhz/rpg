@@ -10,6 +10,9 @@ import {
 import { CharacterService } from './character.service';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
+import { exception } from '../exception/exception'
+
+const DISASTER = new exception("Múltiplas falhas!");
 
 @Controller('characters')
 export class CharacterController {
