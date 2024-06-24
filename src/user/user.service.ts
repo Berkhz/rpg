@@ -53,4 +53,10 @@ export class UserService {
     }
     return await this.userModel.findByIdAndDelete(id).exec();
   }
+
+  async findByUsername(username: string): Promise<User> {
+    return this.userModel.findOne({ username }).exec();
+  }
 }
+
+

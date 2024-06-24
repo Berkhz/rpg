@@ -1,29 +1,28 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Request,
-  UseGuards
-} from '@nestjs/common';
-import { JwtAuthGuard } from './guards/auth.guards';
+import { UserFromRequest } from './decorators/user.decorator';
+import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
+import { UserSinginDto } from './dtos/user-signin.dto';
+import { JwtAuthGuard } from './guards/jwt-auth-guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @HttpCode(HttpStatus.OK)
+  @ApiBody({ type: UserSinginDto })
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.signIn(signInDto.username, signInDto.password);
+  @UseGuards(LocalAuthGuard)
+  signin(@UserFromRequest() user: User) {
+    return this.authService.login(user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  profile(@UserFromRequest() user: User) {
+    return user;
   }
 }

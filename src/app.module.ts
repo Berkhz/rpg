@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CharacterModule } from './character/character.module';
 import { UserModule } from './user/user.module';
 import { AiModule } from './ai/ai.module';
+import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
 
 @Module({
@@ -20,7 +21,8 @@ import * as dotenv from 'dotenv';
     }),
     CharacterModule,
     UserModule,
-    AiModule
+    AiModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
